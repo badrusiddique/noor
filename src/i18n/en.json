@@ -1,0 +1,10 @@
+{
+  "app": {
+    "name": "Noor",
+    "tagline": "A South Asian Quran reader."
+  },
+  "phase0": {
+    "title": "Phase 0 — Bootstrap",
+    "body": "The Mushaf reader will replace this screen in Phase 2."
+  }
+}

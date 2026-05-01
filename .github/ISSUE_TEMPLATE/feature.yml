@@ -1,0 +1,53 @@
+name: Feature request
+description: Suggest a feature or improvement for Noor.
+title: "[feature] "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a feature. Please describe the problem you're trying to solve, not just the solution.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: What user need does this address? Who benefits?
+      placeholder: As someone memorizing the Quran, I want to repeat an ayah N times before moving to the next, so my muscle memory builds without manually tapping replay.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Sketch the UX or behavior. Don't worry about implementation — that's the maintainer's job.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other approaches you thought about. What's right and wrong about each?
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Mockups, similar apps, references — anything that helps.
+
+  - type: checkboxes
+    id: principles
+    attributes:
+      label: Alignment with project principles
+      description: Confirm this proposal doesn't violate Noor's core stance (see README).
+      options:
+        - label: Does not require accounts or login.
+          required: true
+        - label: Does not require a backend operated by the maintainer.
+          required: true
+        - label: Does not introduce ads, analytics on verse content, or notifications by default.
+          required: true
+        - label: Does not break the 15-line Mushaf invariant.
+          required: true

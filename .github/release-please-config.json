@@ -1,0 +1,26 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "node",
+  "include-component-in-tag": false,
+  "include-v-in-tag": true,
+  "bump-minor-pre-major": true,
+  "bump-patch-for-minor-pre-major": false,
+  "draft": true,
+  "prerelease": false,
+  "packages": {
+    ".": {
+      "package-name": "noor"
+    }
+  },
+  "changelog-sections": [
+    { "type": "feat",     "section": "Features" },
+    { "type": "fix",      "section": "Bug Fixes" },
+    { "type": "perf",     "section": "Performance" },
+    { "type": "docs",     "section": "Documentation" },
+    { "type": "refactor", "section": "Code Refactoring" },
+    { "type": "test",     "section": "Tests" },
+    { "type": "build",    "section": "Build" },
+    { "type": "ci",       "section": "CI" },
+    { "type": "chore",    "section": "Chore", "hidden": true }
+  ]
+}

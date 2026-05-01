@@ -1,0 +1,67 @@
+{
+  "$comment": "Source manifest for the Noor SQLite build. Phase 1 will fill in sha256 values.",
+  "schema_version": 1,
+  "sources": {
+    "tanzil_uthmani": {
+      "url": "https://tanzil.net/pub/download/index.php?quranType=uthmani&outType=xml-marker&zipped=no",
+      "sha256": "TBD-PHASE-1",
+      "license": "CC-BY-3.0",
+      "attribution": "Tanzil.net"
+    },
+    "tanzil_simple_indopak": {
+      "url": "https://tanzil.net/pub/download/index.php?quranType=simple&outType=xml-marker",
+      "sha256": "TBD-PHASE-1",
+      "license": "CC-BY-3.0",
+      "attribution": "Tanzil.net"
+    },
+    "tanzil_metadata": {
+      "url": "https://tanzil.net/docs/quran_metadata",
+      "sha256": "TBD-PHASE-1",
+      "license": "CC-BY-3.0",
+      "attribution": "Tanzil.net"
+    },
+    "trans_kanzuliman_urdu": {
+      "url": "https://quranenc.com/api/v1/translation/list/urdu_raza",
+      "sha256": "TBD-PHASE-1",
+      "license": "Public Domain",
+      "attribution": "Ahmad Raza Khan (d. 1921). Sourced via QuranEnc.com."
+    },
+    "trans_maududi_urdu": {
+      "url": "https://quranenc.com/api/v1/translation/list/urdu_maududi",
+      "sha256": "TBD-PHASE-1",
+      "license": "Free non-commercial digital distribution",
+      "attribution": "Sayyid Abul A'la Maududi (Tafhim-ul-Quran). Sourced via QuranEnc.com."
+    },
+    "trans_sahih_english": {
+      "url": "https://quranenc.com/api/v1/translation/list/english_saheeh",
+      "sha256": "TBD-PHASE-1",
+      "license": "Free non-commercial digital distribution with attribution",
+      "attribution": "Saheeh International (1997). Sourced via QuranEnc.com / Al-Muntada Al-Islami."
+    },
+    "font_kfgqpc_indopak": {
+      "url": "https://github.com/quran/quran.com-images/raw/master/fonts/kfgqpc-indopak/KFGQPC-IndoPak.ttf",
+      "sha256": "TBD-PHASE-1",
+      "license": "Free for Quranic display use with attribution",
+      "attribution": "King Fahd Glorious Quran Printing Complex"
+    },
+    "font_scheherazade_new": {
+      "url": "https://software.sil.org/downloads/r/scheherazade/Scheherazade-New-3.300.zip",
+      "sha256": "TBD-PHASE-1",
+      "license": "SIL Open Font License 1.1",
+      "attribution": "SIL International"
+    }
+  },
+  "audio_cdns": {
+    "everyayah_alafasy_64": "https://everyayah.com/data/Alafasy_64kbps/",
+    "everyayah_ghamdi_40": "https://everyayah.com/data/Ghamadi_40kbps/",
+    "everyayah_abdulbasit_mujawwad_64": "https://everyayah.com/data/Abdul_Basit_Mujawwad_64kbps/",
+    "quranicaudio_alafasy": "https://download.quranicaudio.com/qdc/mishary_al_afasy/murattal/",
+    "quranicaudio_saadalghamdi": "https://download.quranicaudio.com/qdc/saad_al_ghamdi/murattal/",
+    "quranicaudio_abdulbasit_mujawwad": "https://download.quranicaudio.com/qdc/abdul_basit/mujawwad/"
+  },
+  "outputs": {
+    "db": "assets/db/quran.db",
+    "fonts_dir": "assets/fonts/",
+    "audio_bundle_dir": "assets/audio/Alafasy/"
+  }
+}

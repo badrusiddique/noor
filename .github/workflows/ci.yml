@@ -1,0 +1,90 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Cache build inputs
+        uses: actions/cache@v4
+        with:
+          path: |
+            data/cache
+            .turbo
+            .expo
+          key: ci-cache-${{ hashFiles('data/sources.json', 'pnpm-lock.yaml') }}
+          restore-keys: |
+            ci-cache-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Format check
+        run: pnpm format:check
+
+      - name: Unit tests
+        run: pnpm test:coverage
+
+      - name: Dead code check
+        run: pnpm knip
+        continue-on-error: true
+
+      - name: Circular dependency check
+        run: pnpm madge
+
+      - name: Bundle size check
+        run: pnpm size
+        continue-on-error: true
+
+      - name: Build SQLite database (Phase 1+)
+        run: pnpm db:build
+        continue-on-error: true
+
+      - name: Verify SQLite database (Phase 1+)
+        run: pnpm db:verify
+        continue-on-error: true
+
+      - name: Expo doctor
+        run: pnpm doctor
+        continue-on-error: true
+
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/
+          if-no-files-found: ignore

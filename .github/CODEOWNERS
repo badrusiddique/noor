@@ -1,0 +1,13 @@
+# Default owner for everything in the repo
+* @badrusiddique
+
+# Sensitive areas explicitly owned
+/scripts/build-db.ts        @badrusiddique
+/scripts/verify-db.ts       @badrusiddique
+/scripts/bundle-audio.ts    @badrusiddique
+/db/migrations/             @badrusiddique
+/db/schema.sql              @badrusiddique
+/.github/                   @badrusiddique
+/docs/decisions/            @badrusiddique
+/docs/KEYSTORE.md           @badrusiddique
+/data/sources.json          @badrusiddique

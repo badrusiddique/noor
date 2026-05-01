@@ -1,0 +1,109 @@
+name: Bug report
+description: Report a defect or unexpected behavior in Noor.
+title: "[bug] "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Please fill out the fields below.
+        For security issues, **do not file a public issue** — see SECURITY.md.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear, concise description of the bug.
+      placeholder: When I tap the bookmark icon on page 255, the icon flashes but no bookmark is saved.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction steps
+      description: Numbered steps a maintainer can follow.
+      placeholder: |
+        1. Cold-launch the app.
+        2. Open Surah Al-Baqarah, page 255.
+        3. Long-press the Throne Verse.
+        4. Tap "Bookmark".
+        5. Kill app, relaunch.
+        6. Open Bookmarks tab — bookmark is missing.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - iOS
+        - Android
+        - Both
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os-version
+    attributes:
+      label: OS version
+      options:
+        - iOS 16
+        - iOS 17
+        - iOS 18
+        - Android 10
+        - Android 12
+        - Android 14
+        - Android 15
+        - Other (note in description)
+    validations:
+      required: true
+
+  - type: input
+    id: device
+    attributes:
+      label: Device model
+      placeholder: iPhone SE 2020 / Pixel 4a / Samsung Galaxy A52
+    validations:
+      required: true
+
+  - type: input
+    id: app-version
+    attributes:
+      label: Noor version
+      description: Visible in Settings → About.
+      placeholder: 0.5.0-marks
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / diagnostics
+      description: |
+        If you have crash report content (Settings → Send Diagnostics emails this), paste it here.
+        Please scrub anything personal first — though the app should not log personal data.
+      render: shell
+
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy confirmation
+      options:
+        - label: I have removed any personal information from this report.
+          required: true

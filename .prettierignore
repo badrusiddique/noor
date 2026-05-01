@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.expo/
+ios/
+android/
+coverage/
+data/cache/
+*.lock
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+CHANGELOG.md
