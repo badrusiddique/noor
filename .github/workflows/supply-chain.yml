@@ -60,9 +60,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # @cyclonedx/cyclonedx-npm calls `npm-ls` under the hood, which fails
+      # against pnpm's node_modules layout. cdxgen is package-manager-agnostic
+      # and supports pnpm directly via `-t pnpm`.
       - name: Generate CycloneDX SBOM
         run: |
-          npx --yes @cyclonedx/cyclonedx-npm --output-file sbom.json --output-format json
+          npx --yes @cyclonedx/cdxgen@^11 -t pnpm -o sbom.json
+        env:
+          FETCH_LICENSE: 'true'
 
       - name: Upload SBOM
         uses: actions/upload-artifact@v4
