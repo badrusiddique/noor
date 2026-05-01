@@ -39,6 +39,7 @@
     "doctor": "expo-doctor"
   },
   "dependencies": {
+    "@expo/metro-runtime": "~4.0.1",
     "@gorhom/bottom-sheet": "^5.0.6",
     "@op-engineering/op-sqlite": "^11.0.0",
     "@react-native-community/netinfo": "11.4.1",
@@ -70,6 +71,7 @@
     "react-native-screens": "~4.1.0",
     "react-native-svg": "15.8.0",
     "react-native-track-player": "^4.1.1",
+    "react-native-web": "~0.19.13",
     "zustand": "^5.0.2"
   },
   "devDependencies": {
