@@ -60,8 +60,9 @@ Full ADRs in [`docs/decisions/`](docs/decisions/).
 
 - Node 20+ (`nvm install 20 && nvm use 20`).
 - pnpm 9 (`corepack enable && corepack prepare pnpm@9.14.4 --activate`).
-- Xcode 15+ (iOS) or Android Studio (Android emulator).
-- Expo Go app on your phone for fastest dev iteration.
+- Xcode 15+ for iOS Simulator builds, Android Studio + SDK for Android local builds (optional — EAS Build runs Android in the cloud).
+
+> **Important: Expo Go is NOT supported.** Noor depends on three native modules that are not bundled in Expo Go: `@op-engineering/op-sqlite` (per [ADR-0003](docs/decisions/0003-op-sqlite-primary-expo-sqlite-fallback.md)), `react-native-mmkv`, and `react-native-track-player` (per [ADR-0008](docs/decisions/0008-react-native-track-player-not-expo-av.md)). You need a custom Expo Dev Client or a local native build.
 
 ### Install
 
@@ -72,13 +73,70 @@ pnpm install
 chmod +x .husky/*    # one-time: husky hook scripts need exec bit
 ```
 
-### Run
+### How to run
+
+There are four supported paths. Pick whichever your hardware allows.
+
+#### Recommended: Android via EAS Dev Client
+
+1. Sign up for [Expo](https://expo.dev) (free) and `pnpm dlx eas-cli login`.
+2. Build the dev client APK:
+   ```sh
+   pnpm dlx eas-cli build --profile development --platform android
+   ```
+   EAS produces a download URL for the APK. Install it on a real Android device or emulator.
+3. Start the bundler locally:
+   ```sh
+   pnpm start
+   ```
+4. Open the installed dev-client app on your device, tap **Enter URL manually**, and paste the LAN URL printed by `pnpm start`.
+
+EAS free tier: 30 builds/month, plenty for solo dev. Re-build the dev client only when native deps change; JS edits hot-reload over the bundler.
+
+#### Recommended (macOS only): iOS Simulator via local build
+
+No Apple Developer fee required for Simulator builds.
+
+1. Install full Xcode (the Mac App Store version, not just `xcode-select --install`) and accept the license.
+2. Install CocoaPods (`brew install cocoapods` or `sudo gem install cocoapods`).
+3. Run:
+   ```sh
+   pnpm exec expo run:ios --simulator
+   ```
+   First run takes ~5–10 minutes (CocoaPods + iOS build). Subsequent runs are fast.
+
+#### iOS device, no Apple Developer Program
+
+**Not supported.** Sideloading on a real iPhone requires a $99/yr Apple Developer Program membership, deferred indefinitely per [ADR-0011](docs/decisions/0011-android-first-launch-defer-ios-store.md). Use the Android dev client or the iOS Simulator until store launch.
+
+#### Web (design-system iteration only)
 
 ```sh
-pnpm start            # Expo dev server, scan QR with Expo Go
-pnpm ios              # iOS simulator
-pnpm android          # Android emulator
+pnpm start --web
 ```
+
+The home placeholder, theme tokens, and component layouts render in the browser. **Mushaf rendering does not work on web** — `op-sqlite` has no web build, and `react-native-pager-view` codegen-imports a native module that web cannot resolve. Tapping "Open Mushaf" in web shows a friendly stub explaining how to run the real reader.
+
+### Common scripts
+
+```sh
+pnpm typecheck        # TypeScript strict-mode check
+pnpm lint             # ESLint
+pnpm format           # Prettier write
+pnpm test             # Jest
+pnpm test:coverage    # Jest with coverage
+pnpm db:build         # Phase 1+: build assets/db/quran.db from Tanzil + QuranEnc
+pnpm db:verify        # Phase 1+: golden-page checksum + FTS5 sanity
+pnpm audio:bundle     # Phase 1+: download + verify bundled Al-Fatihah Alafasy
+pnpm doctor           # expo-doctor — environment sanity
+pnpm size             # bundle-size budget check (5% PR gate)
+pnpm madge            # circular import detection
+pnpm knip             # dead-code detection
+```
+
+### Why no Expo Go?
+
+Expo Go is a pre-built native shell that ships a fixed set of native modules. Noor's data layer ([ADR-0003](docs/decisions/0003-op-sqlite-primary-expo-sqlite-fallback.md)) is built on `op-sqlite` for FTS5 and JSI sync ergonomics; persistence ([persist](src/state/persist.ts)) is built on `react-native-mmkv` for sync KV reads; audio ([ADR-0008](docs/decisions/0008-react-native-track-player-not-expo-av.md)) is built on `react-native-track-player` for proper lock-screen and CarPlay support. None of these ship in Expo Go. The dev client APK or a local iOS build is the supported path.
 
 ### Common scripts
 
@@ -164,14 +222,16 @@ For `v1.0.0`: every row, every device, every OS version. Plan a full day for the
 
 ## Distribution
 
-| Phase | iOS                                        | Android                                    | Cost                |
-| ----- | ------------------------------------------ | ------------------------------------------ | ------------------- |
-| 0–2   | Expo Go (`expo start --tunnel` QR)         | Expo Go                                    | $0                  |
-| 3–7   | Expo Go + EAS preview                      | EAS preview APK, sideload                  | $0                  |
-| 8 RC  | Expo Go (TestFlight = $99/yr, deferred)    | Play Console internal track ($25 one-time) | $0 (Apple deferred) |
-| 9 MVP | App Store ($99/yr — deferred indefinitely) | Play Store production                      | **$25**             |
+| Phase | iOS                                                       | Android                                          | Cost                |
+| ----- | --------------------------------------------------------- | ------------------------------------------------ | ------------------- |
+| 0–2   | iOS Simulator via local Xcode build (`expo run:ios`)      | EAS dev-client APK (`development` profile)       | $0                  |
+| 3–7   | iOS Simulator + EAS preview Simulator build               | EAS dev-client + EAS preview APK, sideload       | $0                  |
+| 8 RC  | iOS Simulator only (TestFlight = $99/yr, deferred)        | Play Console internal track ($25 one-time)       | $0 (Apple deferred) |
+| 9 MVP | App Store ($99/yr — deferred indefinitely per [ADR-0011]) | Play Store production (AAB via `production` EAS) | **$25**             |
 
-Android-first launch. iOS deferred until Android traction justifies the $99/yr.
+Android-first launch. iOS deferred until Android traction justifies the $99/yr. Web bundle exists for theme + design-system iteration only — see [How to run](#how-to-run).
+
+[ADR-0011]: docs/decisions/0011-android-first-launch-defer-ios-store.md
 
 ---
 

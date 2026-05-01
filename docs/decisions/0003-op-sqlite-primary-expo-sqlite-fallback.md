@@ -34,3 +34,7 @@ Negative: one fewer first-party Expo module. If `op-sqlite` is abandoned, we hav
 ## Verification
 
 Phase 1 day-1 spike: same `client.ts` API on `op-sqlite` and `expo-sqlite`, exercised on all four target environments. CI also runs the data-layer unit tests against both bindings to keep the abstraction honest. Page query for page 100 returns under 20ms p95 on Pixel 4a.
+
+## Tradeoff acknowledged: Expo Go is incompatible
+
+`@op-engineering/op-sqlite` is a JSI native module that Expo Go does not bundle. Once this binding is in the app's dependency tree (Phase 1+), Expo Go cannot launch the app — the JS bundle fails as soon as `getDb()` is called. **A custom Expo Dev Client is required from Phase 2 onward.** The dev client is built once via `eas build --profile development --platform android` (per the `eas.json` introduced in `fix/dev-client-and-web-bundle`) and reused across JS edits via `pnpm start`. Web bundling is supported only for design-system iteration; `src/data/db/client.web.ts` short-circuits any attempt to open the DB on web with a clear error.
