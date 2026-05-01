@@ -36,3 +36,7 @@ Negative: an extra native module to configure in `app.config.ts` and to keep up 
 ## Verification
 
 Phase 7 manual QA: full Surah Al-Fatihah Alafasy plays. Lock the screen mid-Q1:3 — audio continues, lock-screen shows reciter + ayah + play/pause. Connect Bluetooth headset, press the headset's pause button — audio pauses; press again — resumes. CarPlay simulator (or Android Auto DHU) shows the now-playing card.
+
+## Tradeoff acknowledged: Expo Go is incompatible
+
+`react-native-track-player` registers a foreground service on Android and an `MPNowPlayingInfoCenter` integration on iOS — neither is bundled into Expo Go's fixed native shell. Combined with `op-sqlite` (ADR-0003) and `react-native-mmkv`, this means **Expo Go cannot run Noor at any phase**. A custom Expo Dev Client is the supported developer experience from Phase 2 onward; see the `eas.json` profiles introduced in `fix/dev-client-and-web-bundle` (`development` profile builds an internal-distribution APK + iOS Simulator binary). Audio is Phase 7, but the dev-client requirement is established at Phase 2 by the data layer alone.
