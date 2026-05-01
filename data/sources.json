@@ -1,52 +1,66 @@
 {
-  "$comment": "Source manifest for the Noor SQLite build. Phase 1 will fill in sha256 values.",
+  "$comment": "Source manifest for the Noor SQLite build. sha256 values are filled in by scripts/build-db.ts at build time and emitted to data/manifest.json.",
   "schema_version": 1,
   "sources": {
     "tanzil_uthmani": {
-      "url": "https://tanzil.net/pub/download/index.php?quranType=uthmani&outType=xml-marker&zipped=no",
-      "sha256": "TBD-PHASE-1",
+      "url": "https://tanzil.net/pub/download/index.php?quranType=uthmani&outType=txt-2&zipped=no",
+      "sha256": "TBD-AT-BUILD",
       "license": "CC-BY-3.0",
-      "attribution": "Tanzil.net"
+      "attribution": "Tanzil.net",
+      "note": "txt-2 is the simple `surah|ayah|text` format, one ayah per line."
     },
     "tanzil_simple_indopak": {
-      "url": "https://tanzil.net/pub/download/index.php?quranType=simple&outType=xml-marker",
-      "sha256": "TBD-PHASE-1",
+      "url": "https://tanzil.net/pub/download/index.php?quranType=simple-clean&outType=txt-2&zipped=no",
+      "sha256": "TBD-AT-BUILD",
       "license": "CC-BY-3.0",
-      "attribution": "Tanzil.net"
+      "attribution": "Tanzil.net",
+      "note": "Phase 1a placeholder for Indo-Pak orthography (Tanzil simple-clean is diacritic-stripped, not true Indo-Pak script). Phase 1b should swap in a true Indo-Pak Mushaf source."
     },
-    "tanzil_metadata": {
-      "url": "https://tanzil.net/docs/quran_metadata",
-      "sha256": "TBD-PHASE-1",
-      "license": "CC-BY-3.0",
-      "attribution": "Tanzil.net"
+    "quran_com_chapters": {
+      "url": "https://api.quran.com/api/v4/chapters?language=en",
+      "sha256": "TBD-AT-BUILD",
+      "license": "Public API",
+      "attribution": "Quran.com (Tarteel Inc.)",
+      "note": "114 surahs metadata (name_arabic, name_simple, revelation_place, verses_count, pages)."
+    },
+    "quran_com_verse_metadata": {
+      "url": "https://api.quran.com/api/v4/verses/by_chapter/{N}?per_page=300&fields=page_number,juz_number,hizb_number,ruku_number,manzil_number,sajdah_number,verse_key",
+      "sha256": "TBD-AT-BUILD",
+      "license": "Public API",
+      "attribution": "Quran.com (Tarteel Inc.)",
+      "note": "Called once per surah (114 calls). Provides page_no/juz_no/hizb_no/ruku_no/manzil_no/sajdah_flag for every ayah. Cached per-surah."
     },
     "trans_kanzuliman_urdu": {
-      "url": "https://quranenc.com/api/v1/translation/list/urdu_raza",
-      "sha256": "TBD-PHASE-1",
-      "license": "Public Domain",
-      "attribution": "Ahmad Raza Khan (d. 1921). Sourced via QuranEnc.com."
+      "url": "https://tanzil.net/trans/ur.kanzuliman",
+      "sha256": "TBD-AT-BUILD",
+      "license": "Public Domain (CC-BY-3.0 via Tanzil)",
+      "attribution": "Ahmad Raza Khan (Kanzul Iman, d. 1921). Sourced via Tanzil.net.",
+      "note": "Tanzil's `/trans/<key>` returns the full translation in `surah|ayah|text` text format. As of 2026 QuranEnc no longer publishes urdu_raza/urdu_maududi -- Tanzil is the only stable source."
     },
     "trans_maududi_urdu": {
-      "url": "https://quranenc.com/api/v1/translation/list/urdu_maududi",
-      "sha256": "TBD-PHASE-1",
-      "license": "Free non-commercial digital distribution",
-      "attribution": "Sayyid Abul A'la Maududi (Tafhim-ul-Quran). Sourced via QuranEnc.com."
+      "url": "https://tanzil.net/trans/ur.maududi",
+      "sha256": "TBD-AT-BUILD",
+      "license": "Free non-commercial digital distribution (CC-BY-3.0 via Tanzil)",
+      "attribution": "Sayyid Abul A'la Maududi (Tafhim-ul-Quran). Sourced via Tanzil.net.",
+      "note": "Single fetch, full translation in `surah|ayah|text` format."
     },
     "trans_sahih_english": {
-      "url": "https://quranenc.com/api/v1/translation/list/english_saheeh",
-      "sha256": "TBD-PHASE-1",
-      "license": "Free non-commercial digital distribution with attribution",
-      "attribution": "Saheeh International (1997). Sourced via QuranEnc.com / Al-Muntada Al-Islami."
+      "url": "https://tanzil.net/trans/en.sahih",
+      "sha256": "TBD-AT-BUILD",
+      "license": "Free non-commercial digital distribution with attribution (CC-BY-3.0 via Tanzil)",
+      "attribution": "Saheeh International (1997). Sourced via Tanzil.net / Al-Muntada Al-Islami.",
+      "note": "Single fetch, full translation in `surah|ayah|text` format."
     },
     "font_kfgqpc_indopak": {
       "url": "https://github.com/quran/quran.com-images/raw/master/fonts/kfgqpc-indopak/KFGQPC-IndoPak.ttf",
-      "sha256": "TBD-PHASE-1",
+      "sha256": "TBD-AT-BUILD",
       "license": "Free for Quranic display use with attribution",
-      "attribution": "King Fahd Glorious Quran Printing Complex"
+      "attribution": "King Fahd Glorious Quran Printing Complex",
+      "note": "Phase 1b will fetch + bundle this font alongside render-and-assert."
     },
     "font_scheherazade_new": {
       "url": "https://software.sil.org/downloads/r/scheherazade/Scheherazade-New-3.300.zip",
-      "sha256": "TBD-PHASE-1",
+      "sha256": "TBD-AT-BUILD",
       "license": "SIL Open Font License 1.1",
       "attribution": "SIL International"
     }

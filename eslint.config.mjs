@@ -40,4 +40,11 @@ export default [
       'no-console': 'off',
     },
   },
+  {
+    // Build / dev scripts run on Node, not in the app — console.log is fine.
+    files: ['scripts/**/*.ts'],
+    rules: {
+      'no-console': 'off',
+    },
+  },
 ];
