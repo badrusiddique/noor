@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0](https://github.com/badrusiddique/noor/compare/v0.2.0...v0.3.0) (2026-05-01)
+
+
+### Features
+
+* **mushaf:** Phase 2 alpha — Mushaf reader v1 (DAL, store, pager, RTL render) ([#24](https://github.com/badrusiddique/noor/issues/24)) ([bbf821e](https://github.com/badrusiddique/noor/commit/bbf821e321469c4a5b35c7e786d9a895d59917cf))
+
 ## [0.2.0](https://github.com/badrusiddique/noor/compare/v0.1.0...v0.2.0) (2026-05-01)
 
 
