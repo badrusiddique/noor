@@ -17,11 +17,14 @@
  *
  * Still deferred (Phase 1c+):
  *   - Real Indo-Pak orthography text (currently using Tanzil simple-clean).
- *   - Real line_no per page (currently sequential 1..N within each page).
- *     Render-and-assert is the test that would correct this; it is paused in
- *     Phase 1b because KFGQPC IndoPak is unfetchable from public mirrors and
- *     the line-break ground-truth cannot be honestly asserted without it
- *     (see scripts/render-assert.ts and ADR-0009).
+ *   - TODO Phase 1c: Real line_no per page (currently sequential 1..N within
+ *     each page). Render-and-assert is the test that would correct this; it
+ *     is paused in Phase 1b because KFGQPC IndoPak is unfetchable from public
+ *     mirrors and the line-break ground-truth cannot be honestly asserted
+ *     without it. See scripts/render-assert.ts and ADR-0009. Once KFGQPC is
+ *     bundled (or a licensed mirror identified), render-assert pulls in
+ *     @napi-rs/canvas, computes line breaks per page, and the build script
+ *     calls UPDATE verses SET line_no = ? for every row before VACUUM.
  *   - Word-level transliteration (per-verse only in 1b).
  */
 
@@ -861,6 +864,26 @@ async function main(): Promise<void> {
   };
   writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, 2) + '\n');
   console.log(`[build-db] manifest: ${MANIFEST_PATH}`);
+
+  // -----------------------------------------------------------------------
+  // 13. Render-and-assert (Phase 1b: pending, see scripts/render-assert.ts)
+  // -----------------------------------------------------------------------
+  // We invoke render-assert as a child step of the build so its outcome is
+  // captured in data/manifest.json under outputs.render_assert. It exits 0
+  // when KFGQPC is unavailable (current Plan B path) so the build is not
+  // blocked.
+  await logPhase('render-and-assert (15-line invariant)', async () => {
+    const { spawnSync } = await import('node:child_process');
+    const result = spawnSync('pnpm', ['db:render-assert'], {
+      cwd: ROOT,
+      stdio: 'inherit',
+    });
+    if (result.status !== 0) {
+      throw new Error(
+        `render-assert exited with status ${result.status}; this should never happen on the Plan B path. Check scripts/render-assert.ts.`,
+      );
+    }
+  });
 
   const totalSec = ((Date.now() - overallStart) / 1000).toFixed(2);
   console.log(`[build-db] DONE in ${totalSec}s. quran.db -> ${OUTPUT_DB}`);
