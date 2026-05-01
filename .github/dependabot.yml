@@ -1,5 +1,9 @@
 version: 2
 updates:
+  # npm: weekly minor + patch updates only. Major bumps are deferred so the
+  # Expo SDK / React Native version pair (ADR-0010) is bumped intentionally,
+  # not by automation. Re-evaluate the ignore list at every intentional
+  # SDK bump.
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
@@ -7,26 +11,31 @@ updates:
       day: 'monday'
       time: '06:00'
       timezone: 'Asia/Kolkata'
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 5
     commit-message:
       prefix: 'chore(deps)'
       include: 'scope'
     groups:
-      production:
+      # All minor + patch updates collapse into one weekly PR per scope so
+      # the queue does not balloon. Production and dev split keeps blast
+      # radius separate when reviewing.
+      production-minor-patch:
         dependency-type: 'production'
         update-types: ['minor', 'patch']
-      dev:
+      dev-minor-patch:
         dependency-type: 'development'
         update-types: ['minor', 'patch']
     ignore:
-      # Pin Expo SDK explicitly; bump it intentionally per ADR-0010.
-      - dependency-name: 'expo'
-        update-types: ['version-update:semver-major']
-      - dependency-name: 'react-native'
-        update-types: ['version-update:semver-major']
-      - dependency-name: 'react'
+      # Block ALL semver-major bumps for npm packages. Majors require a human
+      # to read the migration notes and run the QA matrix. Dependabot's
+      # `groups.update-types: [minor, patch]` controls grouping, not what
+      # PRs Dependabot opens at all -- without this rule it still opens an
+      # individual PR per major bump (which is what filled the queue with
+      # 14 PRs in the bootstrap window). The wildcard catches every package.
+      - dependency-name: '*'
         update-types: ['version-update:semver-major']
 
+  # github-actions: weekly minor + patch only, same logic.
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
@@ -34,6 +43,13 @@ updates:
       day: 'monday'
       time: '06:00'
       timezone: 'Asia/Kolkata'
+    open-pull-requests-limit: 3
     commit-message:
       prefix: 'ci(deps)'
       include: 'scope'
+    groups:
+      actions-minor-patch:
+        update-types: ['minor', 'patch']
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
