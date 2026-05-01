@@ -51,6 +51,13 @@
       "attribution": "Saheeh International (1997). Sourced via Tanzil.net / Al-Muntada Al-Islami.",
       "note": "Single fetch, full translation in `surah|ayah|text` format."
     },
+    "transliteration_en": {
+      "url": "https://tanzil.net/trans/en.transliteration",
+      "sha256": "TBD-AT-BUILD",
+      "license": "CC-BY-3.0 via Tanzil",
+      "attribution": "Tanzil.net en.transliteration corpus.",
+      "note": "Per-verse Latin-script transliteration. Tanzil encodes long vowels and emphatics with <u>...</u> / <b>...</b> tags; the build script strips those tags before insertion so the column stores plain ASCII suitable for FTS5. Word-level transliteration is deferred to v2."
+    },
     "font_kfgqpc_indopak": {
       "url": "https://github.com/quran/quran.com-images/raw/master/fonts/kfgqpc-indopak/KFGQPC-IndoPak.ttf",
       "sha256": "UNAVAILABLE",
