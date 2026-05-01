@@ -14,12 +14,7 @@ const config: ExpoConfig = {
     resizeMode: 'contain',
     backgroundColor: '#f7f3ec',
   },
-  assetBundlePatterns: [
-    'assets/fonts/*',
-    'assets/db/*',
-    'assets/audio/**/*',
-    'assets/images/*',
-  ],
+  assetBundlePatterns: ['assets/fonts/*', 'assets/db/*', 'assets/audio/**/*', 'assets/images/*'],
   ios: {
     supportsTablet: true,
     bundleIdentifier: 'app.noor.quran',
@@ -40,11 +35,7 @@ const config: ExpoConfig = {
     favicon: './assets/images/favicon.png',
     bundler: 'metro',
   },
-  plugins: [
-    'expo-router',
-    'expo-font',
-    'expo-localization',
-  ],
+  plugins: ['expo-router', 'expo-font', 'expo-localization'],
   experiments: {
     typedRoutes: true,
   },

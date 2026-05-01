@@ -6,14 +6,14 @@ on:
   workflow_dispatch:
     inputs:
       platform:
-        description: "Platform to submit"
+        description: 'Platform to submit'
         required: true
         type: choice
         options:
           - android
           - ios
       build-id:
-        description: "EAS build ID (from `eas build:list`)"
+        description: 'EAS build ID (from `eas build:list`)'
         required: true
         type: string
 

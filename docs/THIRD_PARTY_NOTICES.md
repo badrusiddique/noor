@@ -80,10 +80,10 @@ A machine-generated full license inventory is produced by the supply-chain workf
 
 Streamed from public CDNs at runtime. Bundled offline: Surah Al-Fatihah by Mishary Rashid Alafasy (~200 KB).
 
-| Reciter | Source | Notes |
-|---|---|---|
-| Mishary Rashid Alafasy | everyayah.com / download.quranicaudio.com | Public Quranic recitation, free distribution |
-| Saad Al-Ghamdi | everyayah.com / download.quranicaudio.com | Public Quranic recitation, free distribution |
+| Reciter                            | Source                                    | Notes                                        |
+| ---------------------------------- | ----------------------------------------- | -------------------------------------------- |
+| Mishary Rashid Alafasy             | everyayah.com / download.quranicaudio.com | Public Quranic recitation, free distribution |
+| Saad Al-Ghamdi                     | everyayah.com / download.quranicaudio.com | Public Quranic recitation, free distribution |
 | Abdul Basit Abdul Samad (Mujawwad) | everyayah.com / download.quranicaudio.com | Public Quranic recitation, free distribution |
 
 ---

@@ -1,7 +1,7 @@
 name: Feature request
 description: Suggest a feature or improvement for Noor.
-title: "[feature] "
-labels: ["enhancement", "triage"]
+title: '[feature] '
+labels: ['enhancement', 'triage']
 body:
   - type: markdown
     attributes:

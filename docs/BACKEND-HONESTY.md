@@ -10,17 +10,17 @@ The headline:
 
 ## Every Network Touchpoint
 
-| Service | Purpose | Required to use the app? | Where it runs |
-|---|---|---|---|
-| **Everyayah.com** | Audio CDN (primary) | No — bundled Al-Fatihah works offline; user can use full app without audio | External, free, public |
-| **download.quranicaudio.com** | Audio CDN (fallback) | No — only used if Everyayah unavailable | External, free, public |
-| **Sentry** | Crash reports | No — opt-in; default OFF; local crash log is the default | External, opt-in only |
-| **Tanzil.net + QuranEnc** | Source XML/JSON | **Build-time only** — never contacted by the app at runtime | External, build-machine only |
-| **api.quran.com (mushaf cross-check)** | Page-map validation | **Build-time only** — never contacted by the app at runtime | External, build-machine only |
-| **fonts.qurancomplex.gov.sa** | KFGQPC font download | **Build-time only** | External, build-machine only |
-| **EAS Build** | Compiles release binaries | Build-time only — never runs on user devices | Expo's servers, only at tag time |
-| **GitHub Actions** | CI | Build-time only | GitHub's servers |
-| **GitHub Releases** | Distribute APK | One-time download per user | GitHub's CDN |
+| Service                                | Purpose                   | Required to use the app?                                                   | Where it runs                    |
+| -------------------------------------- | ------------------------- | -------------------------------------------------------------------------- | -------------------------------- |
+| **Everyayah.com**                      | Audio CDN (primary)       | No — bundled Al-Fatihah works offline; user can use full app without audio | External, free, public           |
+| **download.quranicaudio.com**          | Audio CDN (fallback)      | No — only used if Everyayah unavailable                                    | External, free, public           |
+| **Sentry**                             | Crash reports             | No — opt-in; default OFF; local crash log is the default                   | External, opt-in only            |
+| **Tanzil.net + QuranEnc**              | Source XML/JSON           | **Build-time only** — never contacted by the app at runtime                | External, build-machine only     |
+| **api.quran.com (mushaf cross-check)** | Page-map validation       | **Build-time only** — never contacted by the app at runtime                | External, build-machine only     |
+| **fonts.qurancomplex.gov.sa**          | KFGQPC font download      | **Build-time only**                                                        | External, build-machine only     |
+| **EAS Build**                          | Compiles release binaries | Build-time only — never runs on user devices                               | Expo's servers, only at tag time |
+| **GitHub Actions**                     | CI                        | Build-time only                                                            | GitHub's servers                 |
+| **GitHub Releases**                    | Distribute APK            | One-time download per user                                                 | GitHub's CDN                     |
 
 ---
 

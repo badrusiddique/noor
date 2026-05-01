@@ -1,7 +1,7 @@
 name: Bug report
 description: Report a defect or unexpected behavior in Noor.
-title: "[bug] "
-labels: ["bug", "triage"]
+title: '[bug] '
+labels: ['bug', 'triage']
 body:
   - type: markdown
     attributes:

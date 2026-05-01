@@ -8,15 +8,11 @@
 
 const isDev = typeof __DEV__ !== 'undefined' ? __DEV__ : false;
 
-export function assert(
-  condition: unknown,
-  message: string,
-): asserts condition {
+export function assert(condition: unknown, message: string): asserts condition {
   if (condition) return;
   if (isDev) {
     throw new Error(`Assertion failed: ${message}`);
   }
-  // eslint-disable-next-line no-console
   console.warn(`[noor] assertion failed: ${message}`);
 }
 

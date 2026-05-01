@@ -3,8 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Home() {
-  const version =
-    (Constants.expoConfig?.version as string | undefined) ?? '0.1.0';
+  const version = (Constants.expoConfig?.version as string | undefined) ?? '0.1.0';
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -13,9 +12,7 @@ export default function Home() {
         <Text style={styles.version}>v{version}</Text>
         <View style={styles.divider} />
         <Text style={styles.title}>Phase 0 — Bootstrap</Text>
-        <Text style={styles.body}>
-          Phase 2 will replace this with the Mushaf reader.
-        </Text>
+        <Text style={styles.body}>Phase 2 will replace this with the Mushaf reader.</Text>
       </View>
     </SafeAreaView>
   );

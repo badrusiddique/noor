@@ -28,27 +28,27 @@ Noor solves the South Asian reader's actual problems and refuses to do the thing
 
 ## Tech Stack
 
-| Layer | Choice |
-|---|---|
-| Runtime | Expo SDK 52 |
-| Framework | React Native 0.76 (new architecture: Fabric + TurboModules) |
-| Language | TypeScript 5.6 (strict, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`) |
-| Routing | `expo-router` v4 (file-based, deep-link friendly) |
-| State | `zustand` v5 + `react-native-mmkv` v3 (KV cache) |
-| Database | `@op-engineering/op-sqlite` (primary, FTS5), `expo-sqlite` (fallback) |
-| Bottom sheets | `@gorhom/bottom-sheet` v5 |
-| Page turn | `react-native-pager-view` (native ViewPager2 / UIPageViewController) |
-| Animation | `react-native-reanimated` v3 + `react-native-gesture-handler` v2 |
-| Long lists | `@shopify/flash-list` |
-| SVG | `react-native-svg` |
-| Audio | `react-native-track-player` (lock-screen, CarPlay, Bluetooth remote events) |
-| i18n | `i18n-js` + `expo-localization` |
-| Crash log | `react-native-exception-handler` (local default) + `@sentry/react-native` (opt-in) |
-| Test (unit) | `jest` + `jest-expo` + `@testing-library/react-native` |
-| Test (E2E) | `maestro` |
-| Test (a11y) | `@axe-core/react-native` |
-| Lint/format | `eslint` v9 flat config + `prettier` v3 |
-| Quality | `knip`, `madge --circular`, `size-limit` |
+| Layer         | Choice                                                                             |
+| ------------- | ---------------------------------------------------------------------------------- |
+| Runtime       | Expo SDK 52                                                                        |
+| Framework     | React Native 0.76 (new architecture: Fabric + TurboModules)                        |
+| Language      | TypeScript 5.6 (strict, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`)  |
+| Routing       | `expo-router` v4 (file-based, deep-link friendly)                                  |
+| State         | `zustand` v5 + `react-native-mmkv` v3 (KV cache)                                   |
+| Database      | `@op-engineering/op-sqlite` (primary, FTS5), `expo-sqlite` (fallback)              |
+| Bottom sheets | `@gorhom/bottom-sheet` v5                                                          |
+| Page turn     | `react-native-pager-view` (native ViewPager2 / UIPageViewController)               |
+| Animation     | `react-native-reanimated` v3 + `react-native-gesture-handler` v2                   |
+| Long lists    | `@shopify/flash-list`                                                              |
+| SVG           | `react-native-svg`                                                                 |
+| Audio         | `react-native-track-player` (lock-screen, CarPlay, Bluetooth remote events)        |
+| i18n          | `i18n-js` + `expo-localization`                                                    |
+| Crash log     | `react-native-exception-handler` (local default) + `@sentry/react-native` (opt-in) |
+| Test (unit)   | `jest` + `jest-expo` + `@testing-library/react-native`                             |
+| Test (E2E)    | `maestro`                                                                          |
+| Test (a11y)   | `@axe-core/react-native`                                                           |
+| Lint/format   | `eslint` v9 flat config + `prettier` v3                                            |
+| Quality       | `knip`, `madge --circular`, `size-limit`                                           |
 
 Full ADRs in [`docs/decisions/`](docs/decisions/).
 
@@ -103,19 +103,19 @@ pnpm knip             # dead-code detection
 
 The plan is shipped in 10 small, individually-tagged releases. Each tag is gated by the brutal QA matrix in [`docs/QA-MATRIX.md`](docs/QA-MATRIX.md) — a single failed Stop-Ship row blocks the tag.
 
-| Phase | Weeks | Tag | Deliverable |
-|---|---|---|---|
-| 0 — Bootstrap | 1 | `v0.1.0-bootstrap` | This repo. CI green on empty PR. ADRs 0001–0010. |
-| 1 — Data pipeline | 2 | `v0.2.0-data` | Tanzil + QuranEnc → SQLite + FTS5; KFGQPC bundled; render-and-assert on all 604 pages. |
-| 2 — Mushaf reader v1 | 3–6 | `v0.3.0-mushaf-alpha` | 15-line page renderer, parchment + OLED night themes, font-size slider clamped. **First user release (APK).** |
-| 3 — Navigation + Home + Surah index | 7 | `v0.4.0-nav` | Bottom tabs, Resume card, Surah index, last-read persistence, Urdu UI strings live. |
-| 4 — Verse sheet + bookmarks + highlights + history + notes + share | 8–9 | `v0.5.0-marks` | Long-press action sheet, optimistic SQL writes, deep-link share to WhatsApp. |
-| 5 — Translation drawer | 10 | `v0.6.0-translate` | Bottom sheet drawer (38px peek / 38% expanded), 3 translations live. |
-| 6 — Search | 11 | `v0.7.0-search` | FTS5 across Arabic + 3 translations + transliteration, diacritic-insensitive. |
-| 7 — Audio | 12–13 | `v0.8.0-audio` | track-player, multi-CDN fallback, 3 reciters, lock-screen controls, hifz workflows. |
-| 8a — Settings + Onboarding + polish | 14a | (intermediate) | Theme switcher, font sliders, privacy positioning copy, Send Diagnostics. |
-| 8b — Qibla | 14b | `v0.9.0-rc` | Magnetometer compass, calibration UI. |
-| 9 — Hardening + MVP launch | 15–16 | `v1.0.0` | Full QA matrix sweep, Sentry crash sweep, store listing, Play Store production. |
+| Phase                                                              | Weeks | Tag                   | Deliverable                                                                                                   |
+| ------------------------------------------------------------------ | ----- | --------------------- | ------------------------------------------------------------------------------------------------------------- |
+| 0 — Bootstrap                                                      | 1     | `v0.1.0-bootstrap`    | This repo. CI green on empty PR. ADRs 0001–0010.                                                              |
+| 1 — Data pipeline                                                  | 2     | `v0.2.0-data`         | Tanzil + QuranEnc → SQLite + FTS5; KFGQPC bundled; render-and-assert on all 604 pages.                        |
+| 2 — Mushaf reader v1                                               | 3–6   | `v0.3.0-mushaf-alpha` | 15-line page renderer, parchment + OLED night themes, font-size slider clamped. **First user release (APK).** |
+| 3 — Navigation + Home + Surah index                                | 7     | `v0.4.0-nav`          | Bottom tabs, Resume card, Surah index, last-read persistence, Urdu UI strings live.                           |
+| 4 — Verse sheet + bookmarks + highlights + history + notes + share | 8–9   | `v0.5.0-marks`        | Long-press action sheet, optimistic SQL writes, deep-link share to WhatsApp.                                  |
+| 5 — Translation drawer                                             | 10    | `v0.6.0-translate`    | Bottom sheet drawer (38px peek / 38% expanded), 3 translations live.                                          |
+| 6 — Search                                                         | 11    | `v0.7.0-search`       | FTS5 across Arabic + 3 translations + transliteration, diacritic-insensitive.                                 |
+| 7 — Audio                                                          | 12–13 | `v0.8.0-audio`        | track-player, multi-CDN fallback, 3 reciters, lock-screen controls, hifz workflows.                           |
+| 8a — Settings + Onboarding + polish                                | 14a   | (intermediate)        | Theme switcher, font sliders, privacy positioning copy, Send Diagnostics.                                     |
+| 8b — Qibla                                                         | 14b   | `v0.9.0-rc`           | Magnetometer compass, calibration UI.                                                                         |
+| 9 — Hardening + MVP launch                                         | 15–16 | `v1.0.0`              | Full QA matrix sweep, Sentry crash sweep, store listing, Play Store production.                               |
 
 Stop-ship rule: **Mushaf reader is end-to-end working before Phase 3 starts**. No parallel feature work.
 
@@ -164,12 +164,12 @@ For `v1.0.0`: every row, every device, every OS version. Plan a full day for the
 
 ## Distribution
 
-| Phase | iOS | Android | Cost |
-|---|---|---|---|
-| 0–2 | Expo Go (`expo start --tunnel` QR) | Expo Go | $0 |
-| 3–7 | Expo Go + EAS preview | EAS preview APK, sideload | $0 |
-| 8 RC | Expo Go (TestFlight = $99/yr, deferred) | Play Console internal track ($25 one-time) | $0 (Apple deferred) |
-| 9 MVP | App Store ($99/yr — deferred indefinitely) | Play Store production | **$25** |
+| Phase | iOS                                        | Android                                    | Cost                |
+| ----- | ------------------------------------------ | ------------------------------------------ | ------------------- |
+| 0–2   | Expo Go (`expo start --tunnel` QR)         | Expo Go                                    | $0                  |
+| 3–7   | Expo Go + EAS preview                      | EAS preview APK, sideload                  | $0                  |
+| 8 RC  | Expo Go (TestFlight = $99/yr, deferred)    | Play Console internal track ($25 one-time) | $0 (Apple deferred) |
+| 9 MVP | App Store ($99/yr — deferred indefinitely) | Play Store production                      | **$25**             |
 
 Android-first launch. iOS deferred until Android traction justifies the $99/yr.
 

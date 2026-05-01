@@ -13,14 +13,14 @@
     }
   },
   "changelog-sections": [
-    { "type": "feat",     "section": "Features" },
-    { "type": "fix",      "section": "Bug Fixes" },
-    { "type": "perf",     "section": "Performance" },
-    { "type": "docs",     "section": "Documentation" },
+    { "type": "feat", "section": "Features" },
+    { "type": "fix", "section": "Bug Fixes" },
+    { "type": "perf", "section": "Performance" },
+    { "type": "docs", "section": "Documentation" },
     { "type": "refactor", "section": "Code Refactoring" },
-    { "type": "test",     "section": "Tests" },
-    { "type": "build",    "section": "Build" },
-    { "type": "ci",       "section": "CI" },
-    { "type": "chore",    "section": "Chore", "hidden": true }
+    { "type": "test", "section": "Tests" },
+    { "type": "build", "section": "Build" },
+    { "type": "ci", "section": "CI" },
+    { "type": "chore", "section": "Chore", "hidden": true }
   ]
 }

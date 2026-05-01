@@ -14,8 +14,8 @@
 
 ## QA performed
 
-- [ ] Manual QA on iOS (device: ___ / OS: ___)
-- [ ] Manual QA on Android (device: ___ / OS: ___)
+- [ ] Manual QA on iOS (device: **_ / OS: _**)
+- [ ] Manual QA on Android (device: **_ / OS: _**)
 - [ ] Relevant rows from `docs/QA-MATRIX.md` run for this phase
 - [ ] No Stop-Ship row regressed
 

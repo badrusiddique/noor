@@ -23,7 +23,6 @@ export function redact(input: string): string {
 function emit(level: Level, args: unknown[]): void {
   if (!isDev) return;
   const fn = level === 'debug' ? console.log : console[level];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (fn as (...a: unknown[]) => void)(...args);
 }
 

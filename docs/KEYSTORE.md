@@ -41,11 +41,11 @@ Pin the fingerprint in this document (below) and in `README.md` so any signed AP
 
 The keystore lives in **three independent locations**, encrypted at rest. **All three must exist before the first production signing.**
 
-| Location | Encryption | Owner | Verified |
-|---|---|---|---|
-| 1. 1Password vault `Noor — Production Secrets` | Vault encryption | Personal account | Phase 8b |
-| 2. Offline encrypted USB drive (LUKS / VeraCrypt), stored in a fire-rated safe | LUKS / VeraCrypt | Personal | Phase 8b |
-| 3. EAS-managed credentials (Expo's hosted vault) | EAS vault | Expo account `badrusiddique` | Phase 8b |
+| Location                                                                       | Encryption       | Owner                        | Verified |
+| ------------------------------------------------------------------------------ | ---------------- | ---------------------------- | -------- |
+| 1. 1Password vault `Noor — Production Secrets`                                 | Vault encryption | Personal account             | Phase 8b |
+| 2. Offline encrypted USB drive (LUKS / VeraCrypt), stored in a fire-rated safe | LUKS / VeraCrypt | Personal                     | Phase 8b |
+| 3. EAS-managed credentials (Expo's hosted vault)                               | EAS vault        | Expo account `badrusiddique` | Phase 8b |
 
 Treat EAS-managed as the **third** backup, not the only one. Expo could change pricing, the account could be suspended, the service could go down. The personal copies are the canon.
 
@@ -55,12 +55,12 @@ The `.keystore` file is in `.gitignore` and **must never be committed**. Pre-com
 
 ## 3. Recovery — Lost or Damaged
 
-| Scenario | Recovery |
-|---|---|
-| Lost laptop, 1Password intact | Restore from 1Password. Re-establish offline backup within 7 days. |
-| Lost 1Password access | Restore from offline encrypted USB. Re-create 1Password entry. |
-| Lost both personal copies | Pull from EAS-managed credentials (`eas credentials`). Immediately re-create both personal copies. |
-| Lost all three | **No recovery.** Ship a new app under a new package name (`app.noor.quran.v2`), notify users via release notes + the existing app's update message that the next update is a new install. |
+| Scenario                      | Recovery                                                                                                                                                                                  |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Lost laptop, 1Password intact | Restore from 1Password. Re-establish offline backup within 7 days.                                                                                                                        |
+| Lost 1Password access         | Restore from offline encrypted USB. Re-create 1Password entry.                                                                                                                            |
+| Lost both personal copies     | Pull from EAS-managed credentials (`eas credentials`). Immediately re-create both personal copies.                                                                                        |
+| Lost all three                | **No recovery.** Ship a new app under a new package name (`app.noor.quran.v2`), notify users via release notes + the existing app's update message that the next update is a new install. |
 
 Practice: every 12 months, confirm all three backups are accessible (open 1Password, plug in USB, run `eas credentials` for the project). Log the date of the last verification in `docs/_keystore-verifications.log` (gitignored).
 
