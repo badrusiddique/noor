@@ -53,17 +53,24 @@
     },
     "font_kfgqpc_indopak": {
       "url": "https://github.com/quran/quran.com-images/raw/master/fonts/kfgqpc-indopak/KFGQPC-IndoPak.ttf",
-      "sha256": "TBD-AT-BUILD",
+      "sha256": "UNAVAILABLE",
       "license": "Free for Quranic display use with attribution",
       "attribution": "King Fahd Glorious Quran Printing Complex",
-      "note": "Phase 1b will fetch + bundle this font alongside render-and-assert."
+      "note": "GAP (Phase 1b, Plan B per ADR-0009): KFGQPC IndoPak is not fetchable from any public mirror as of 2026-05. The previously-pinned URL returns 404 and no public CDN, GitHub repo, or KFGQPC origin host serves the file. Scheherazade New is shipped as the primary Arabic font; KFGQPC is deferred to v1.1 as a user-downloadable on first launch (one-time accept + 4 MB download) once a licensed mirror is identified."
     },
     "font_scheherazade_new": {
-      "url": "https://software.sil.org/downloads/r/scheherazade/Scheherazade-New-3.300.zip",
+      "url": "https://software.sil.org/downloads/r/scheherazade/ScheherazadeNew-4.500.zip",
       "sha256": "TBD-AT-BUILD",
       "license": "SIL Open Font License 1.1",
-      "attribution": "SIL International"
+      "attribution": "SIL International",
+      "note": "Primary Arabic font for Phase 1b (Plan B per ADR-0009 since KFGQPC IndoPak is unavailable). The zip contains ScheherazadeNew-Regular.ttf and bold/italic siblings; only Regular is bundled."
     }
+  },
+  "audio_bundle_alafasy": {
+    "$comment": "Surah Al-Fatihah Alafasy MP3s bundled into the app for fully-offline first-run audio (~150 KB total). URL pattern: <base><surah_3digit><ayah_3digit>.mp3",
+    "base_url": "https://everyayah.com/data/Alafasy_64kbps/",
+    "verses": ["001001", "001002", "001003", "001004", "001005", "001006", "001007"],
+    "license": "Public CDN; reciter is Mishary Rashid Alafasy. Audio files distributed by everyayah.com."
   },
   "audio_cdns": {
     "everyayah_alafasy_64": "https://everyayah.com/data/Alafasy_64kbps/",
