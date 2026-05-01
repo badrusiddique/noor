@@ -71,7 +71,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
-    "@commitlint/cli": "^19.6.0",
+    "@commitlint/cli": "^20.5.3",
     "@commitlint/config-conventional": "^19.6.0",
     "@cyclonedx/cyclonedx-npm": "^2.0.0",
     "@size-limit/preset-app": "^11.1.6",
