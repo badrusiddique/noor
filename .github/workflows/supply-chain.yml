@@ -20,6 +20,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # Gitleaks scans the diff between commits, so shallow clones break
+          # its `git log` traversal. Full history is cheap on this repo size.
+          fetch-depth: 0
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
