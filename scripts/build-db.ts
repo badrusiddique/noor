@@ -837,7 +837,33 @@ async function main(): Promise<void> {
   const dbBuf = readFileSync(OUTPUT_DB);
   const dbSha = sha256Hex(dbBuf);
 
-  const manifest = {
+  // Read any pre-existing manifest so we preserve outputs that other scripts
+  // own (outputs.fonts from fetch-fonts.ts, outputs.audio from bundle-audio.ts,
+  // outputs.render_assert from render-assert.ts). build-db owns outputs.db,
+  // sources, built_at, schema_version, notes -- and only those.
+  type ManifestShape = {
+    schema_version?: number;
+    built_at?: string;
+    sources?: Record<string, unknown>;
+    outputs?: {
+      db?: unknown;
+      fonts?: unknown;
+      audio?: unknown;
+      render_assert?: unknown;
+    };
+    notes?: unknown;
+  };
+
+  let existingManifest: ManifestShape = {};
+  if (existsSync(MANIFEST_PATH)) {
+    try {
+      existingManifest = JSON.parse(readFileSync(MANIFEST_PATH, 'utf-8')) as ManifestShape;
+    } catch {
+      existingManifest = {};
+    }
+  }
+
+  const manifest: ManifestShape = {
     schema_version: 1,
     built_at: new Date().toISOString(),
     sources: Object.fromEntries(
@@ -852,6 +878,19 @@ async function main(): Promise<void> {
         sha256: dbSha,
         size_bytes: stat.size,
       },
+      // Preserve sibling outputs so re-running pnpm db:build does not wipe
+      // out font / audio / render-assert manifest entries (they are written
+      // by separate scripts and we want db:build to be a strict superset, not
+      // a destructive overwrite).
+      ...(existingManifest.outputs?.fonts !== undefined
+        ? { fonts: existingManifest.outputs.fonts }
+        : {}),
+      ...(existingManifest.outputs?.audio !== undefined
+        ? { audio: existingManifest.outputs.audio }
+        : {}),
+      ...(existingManifest.outputs?.render_assert !== undefined
+        ? { render_assert: existingManifest.outputs.render_assert }
+        : {}),
     },
     notes: {
       phase: '1b',
