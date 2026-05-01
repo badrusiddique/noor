@@ -1,8 +1,17 @@
 name: EAS Build
 
-# Required secrets:
+# Required secrets (jobs no-op gracefully if absent):
 #   EXPO_TOKEN          — Expo personal access token (for EAS dispatch)
 #   SENTRY_AUTH_TOKEN   — Sentry auth token (for source-map upload, optional)
+#
+# Gating policy:
+#   - Android: only on v1.* tags. The v0.x.x bootstrap-window tags are
+#     internal milestones (Phase 0 / Phase 1a / Phase 1b / etc.) — building
+#     a real APK costs an EAS priority-build slot and there is no app to
+#     ship to a tester yet. v0.3.0-mushaf-alpha is the first user-shippable
+#     tag per the plan; once we hit that, flip the gate from `v1.` to `v0.3.`.
+#   - iOS: only on v1.* tags (Apple Developer Program is deferred per
+#     ADR-0011 — no enrollment, no signing, no submit until Android traction).
 #
 # Free-tier note: EAS Build has a monthly priority-build budget.
 # This workflow runs only on tags, so PR/CI churn does not consume the budget.
@@ -20,6 +29,7 @@ permissions:
 jobs:
   android:
     name: EAS Build — Android
+    if: startsWith(github.ref, 'refs/tags/v1.')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
