@@ -31,9 +31,16 @@ export const colors = {
   mushafBg: '#f5ecd6',
   mushafInk: '#1a1410',
 
-  // Night theme — true OLED black
+  // Brand navy — sampled from the app icon backdrop. Used for the splash
+  // screen, the night-theme card surface, and any "deep night" element
+  // that should echo the icon. Kept distinct from `nightBg` so the
+  // OLED-true black for full-screen night mode stays a hard #000000.
+  brandNavy: '#131f2a',
+  brandNavyDeep: '#0a1525',
+
+  // Night theme — true OLED black background, brand-navy elevated surfaces
   nightBg: '#000000',
-  nightSurface: '#0a0a0a',
+  nightSurface: '#131f2a',
   nightInk: '#e8e3d8',
   nightAccent: '#3aa39a',
 

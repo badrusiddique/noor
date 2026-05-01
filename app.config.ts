@@ -12,7 +12,10 @@ const config: ExpoConfig = {
   splash: {
     image: './assets/images/splash.png',
     resizeMode: 'contain',
-    backgroundColor: '#f7f3ec',
+    // Brand navy from the icon backdrop, so launch -> splash -> first
+    // frame stays visually continuous instead of flashing parchment under
+    // the dark-themed icon during the resize fit.
+    backgroundColor: '#131f2a',
   },
   assetBundlePatterns: ['assets/fonts/*', 'assets/db/*', 'assets/audio/**/*', 'assets/images/*'],
   ios: {
@@ -27,7 +30,9 @@ const config: ExpoConfig = {
     package: 'app.noor.quran',
     adaptiveIcon: {
       foregroundImage: './assets/images/adaptive-icon.png',
-      backgroundColor: '#f7f3ec',
+      // Matches the icon backdrop so Android's circular/squircle masks
+      // don't reveal a parchment edge around the rendered logo.
+      backgroundColor: '#131f2a',
     },
     permissions: [],
   },
