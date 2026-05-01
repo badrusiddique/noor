@@ -39,7 +39,7 @@
   "dependencies": {
     "@gorhom/bottom-sheet": "^5.0.6",
     "@op-engineering/op-sqlite": "^11.0.0",
-    "@react-native-community/netinfo": "11.4.1",
+    "@react-native-community/netinfo": "12.0.1",
     "@sentry/react-native": "^6.4.0",
     "@shopify/flash-list": "1.7.2",
     "expo": "~52.0.0",
