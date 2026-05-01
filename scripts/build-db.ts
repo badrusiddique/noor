@@ -11,18 +11,28 @@
  *   - FTS5 verses_fts populated via triggers
  *   - recitations seeded by schema.sql
  *
- * Deferred to Phase 1b:
- *   - Real Indo-Pak orthography text (currently using Tanzil simple-clean)
- *   - Real line_no per page (currently sequential 1..N within each page)
- *   - Transliteration column population
- *   - Render-and-assert with KFGQPC font
- *   - Bundling Surah Al-Fatihah Alafasy audio
+ * Phase 1b additions (this file):
+ *   - Per-verse English transliteration populated into verses.transliteration
+ *     (and reflected into verses_fts via the AFTER UPDATE trigger).
+ *
+ * Still deferred (Phase 1c+):
+ *   - Real Indo-Pak orthography text (currently using Tanzil simple-clean).
+ *   - TODO Phase 1c: Real line_no per page (currently sequential 1..N within
+ *     each page). Render-and-assert is the test that would correct this; it
+ *     is paused in Phase 1b because KFGQPC IndoPak is unfetchable from public
+ *     mirrors and the line-break ground-truth cannot be honestly asserted
+ *     without it. See scripts/render-assert.ts and ADR-0009. Once KFGQPC is
+ *     bundled (or a licensed mirror identified), render-assert pulls in
+ *     @napi-rs/canvas, computes line breaks per page, and the build script
+ *     calls UPDATE verses SET line_no = ? for every row before VACUUM.
+ *   - Word-level transliteration (per-verse only in 1b).
  */
 
 import { existsSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 import { setTimeout as sleep } from 'node:timers/promises';
+import { spawnSync } from 'node:child_process';
 
 import Database from 'better-sqlite3';
 
@@ -214,6 +224,17 @@ async function fetchWithCache(name: string, url: string): Promise<Buffer> {
 // ---------------------------------------------------------------------------
 // Parsers
 // ---------------------------------------------------------------------------
+
+/**
+ * Strips Tanzil's transliteration markup. The raw transliteration text uses
+ * `<u>...</u>` for long vowels / emphatic consonants and `<b>...</b>` for
+ * doubled or assimilated consonants (and includes uppercase variants for
+ * mid-word toggles). The DB column stores a plain-ASCII rendering suitable
+ * for FTS5, so we drop the tags but keep the wrapped characters.
+ */
+function stripTanzilTransliterationMarkup(raw: string): string {
+  return raw.replace(/<\/?[uUbB]>/g, '');
+}
 
 /**
  * Parses Tanzil's `surah|ayah|text` text format. Skips blanks and `#` comment lines.
@@ -649,6 +670,44 @@ async function main(): Promise<void> {
   }
 
   // -----------------------------------------------------------------------
+  // 9b. Transliteration (Phase 1b deliverable D)
+  // -----------------------------------------------------------------------
+  //
+  // Tanzil's en.transliteration is per-verse Latin script with markup tags
+  // for long vowels / emphatic consonants. We strip the tags and write the
+  // plain ASCII into verses.transliteration. The `verses_au` trigger on the
+  // table will reflect the new value into verses_fts automatically.
+
+  let transliterationCount = 0;
+  await logPhase('fetch + insert per-verse English transliteration', async () => {
+    const url = 'https://tanzil.net/trans/en.transliteration';
+    const buf = await fetchWithCache('tanzil_trans_en.transliteration', url);
+    const parsed = parseTanzilTxt(buf.toString('utf-8'));
+    console.log(
+      `[build-db]    transliteration: parsed ${parsed.size} rows (${(buf.length / 1024).toFixed(1)} KB)`,
+    );
+    if (parsed.size < EXPECTED_VERSE_TOTAL - 30) {
+      throw new Error(
+        `transliteration parsed ${parsed.size} rows; expected ~${EXPECTED_VERSE_TOTAL}. Tanzil corpus may have shifted.`,
+      );
+    }
+
+    const stmt = db.prepare(`UPDATE verses SET transliteration = ? WHERE id = ?`);
+    const tx = db.transaction(() => {
+      for (const [key, raw] of parsed) {
+        const verseId = verseIdByKey.get(key);
+        if (verseId === undefined) continue;
+        const cleaned = stripTanzilTransliterationMarkup(raw).trim();
+        if (cleaned.length === 0) continue;
+        stmt.run(cleaned, verseId);
+        transliterationCount++;
+      }
+    });
+    tx();
+    console.log(`[build-db]    populated transliteration on ${transliterationCount} verses`);
+  });
+
+  // -----------------------------------------------------------------------
   // 10. Validate
   // -----------------------------------------------------------------------
 
@@ -716,6 +775,33 @@ async function main(): Promise<void> {
       );
     }
 
+    // Transliteration coverage
+    const tl = db
+      .prepare(
+        `SELECT COUNT(*) AS c FROM verses WHERE transliteration IS NOT NULL AND length(transliteration) > 0`,
+      )
+      .get() as { c: number };
+    if (tl.c !== EXPECTED_VERSE_TOTAL) {
+      throw new Error(
+        `transliteration populated on ${tl.c} verses; expected exactly ${EXPECTED_VERSE_TOTAL}`,
+      );
+    }
+
+    // FTS5 search across transliteration column should hit Q1:2 for "alhamdu" or "rabbi".
+    const tlFts = db
+      .prepare(
+        `SELECT v.surah_no, v.ayah_no
+         FROM verses_fts JOIN verses v ON v.id = verses_fts.rowid
+         WHERE verses_fts MATCH 'transliteration : alhamdu' LIMIT 5`,
+      )
+      .all() as { surah_no: number; ayah_no: number }[];
+    const tlHas12 = tlFts.some((r) => r.surah_no === 1 && r.ayah_no === 2);
+    if (!tlHas12) {
+      throw new Error(
+        `FTS5 transliteration search for "alhamdu" did not hit Q1:2 (found ${tlFts.length} rows)`,
+      );
+    }
+
     console.log(
       `[build-db]    verses=${v.c} pages_max=${maxRow.p} juz_max=${maxRow.j} hizb_max=${maxRow.h}`,
     );
@@ -752,7 +838,33 @@ async function main(): Promise<void> {
   const dbBuf = readFileSync(OUTPUT_DB);
   const dbSha = sha256Hex(dbBuf);
 
-  const manifest = {
+  // Read any pre-existing manifest so we preserve outputs that other scripts
+  // own (outputs.fonts from fetch-fonts.ts, outputs.audio from bundle-audio.ts,
+  // outputs.render_assert from render-assert.ts). build-db owns outputs.db,
+  // sources, built_at, schema_version, notes -- and only those.
+  type ManifestShape = {
+    schema_version?: number;
+    built_at?: string;
+    sources?: Record<string, unknown>;
+    outputs?: {
+      db?: unknown;
+      fonts?: unknown;
+      audio?: unknown;
+      render_assert?: unknown;
+    };
+    notes?: unknown;
+  };
+
+  let existingManifest: ManifestShape = {};
+  if (existsSync(MANIFEST_PATH)) {
+    try {
+      existingManifest = JSON.parse(readFileSync(MANIFEST_PATH, 'utf-8')) as ManifestShape;
+    } catch {
+      existingManifest = {};
+    }
+  }
+
+  const manifest: ManifestShape = {
     schema_version: 1,
     built_at: new Date().toISOString(),
     sources: Object.fromEntries(
@@ -767,18 +879,50 @@ async function main(): Promise<void> {
         sha256: dbSha,
         size_bytes: stat.size,
       },
+      // Preserve sibling outputs so re-running pnpm db:build does not wipe
+      // out font / audio / render-assert manifest entries (they are written
+      // by separate scripts and we want db:build to be a strict superset, not
+      // a destructive overwrite).
+      ...(existingManifest.outputs?.fonts !== undefined
+        ? { fonts: existingManifest.outputs.fonts }
+        : {}),
+      ...(existingManifest.outputs?.audio !== undefined
+        ? { audio: existingManifest.outputs.audio }
+        : {}),
+      ...(existingManifest.outputs?.render_assert !== undefined
+        ? { render_assert: existingManifest.outputs.render_assert }
+        : {}),
     },
     notes: {
-      phase: '1a',
+      phase: '1b',
       placeholders: [
-        'text_indopak uses Tanzil simple-clean (true Indo-Pak orthography pending Phase 1b)',
-        'line_no is sequential per page (real KFGQPC line breaks pending Phase 1b)',
-        'transliteration is NULL across verses + words (pending Phase 1b)',
+        'text_indopak uses Tanzil simple-clean (true Indo-Pak orthography deferred to Phase 1c -- KFGQPC IndoPak font is unfetchable from public mirrors as of 2026-05)',
+        'line_no is sequential per page (render-and-assert paused -- see scripts/render-assert.ts; Plan B per ADR-0009)',
+        'verses.transliteration is populated from Tanzil en.transliteration; words.transliteration remains NULL (word-level deferred to v2 word-tap)',
       ],
     },
   };
   writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, 2) + '\n');
   console.log(`[build-db] manifest: ${MANIFEST_PATH}`);
+
+  // -----------------------------------------------------------------------
+  // 13. Render-and-assert (Phase 1b: pending, see scripts/render-assert.ts)
+  // -----------------------------------------------------------------------
+  // We invoke render-assert as a child step of the build so its outcome is
+  // captured in data/manifest.json under outputs.render_assert. It exits 0
+  // when KFGQPC is unavailable (current Plan B path) so the build is not
+  // blocked.
+  await logPhase('render-and-assert (15-line invariant)', async () => {
+    const result = spawnSync('pnpm', ['db:render-assert'], {
+      cwd: ROOT,
+      stdio: 'inherit',
+    });
+    if (result.status !== 0) {
+      throw new Error(
+        `render-assert exited with status ${result.status}; this should never happen on the Plan B path. Check scripts/render-assert.ts.`,
+      );
+    }
+  });
 
   const totalSec = ((Date.now() - overallStart) / 1000).toFixed(2);
   console.log(`[build-db] DONE in ${totalSec}s. quran.db -> ${OUTPUT_DB}`);

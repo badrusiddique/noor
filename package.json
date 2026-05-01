@@ -30,6 +30,8 @@
     "db:build": "tsx scripts/build-db.ts",
     "db:verify": "tsx scripts/verify-db.ts",
     "audio:bundle": "tsx scripts/bundle-audio.ts",
+    "fonts:fetch": "tsx scripts/fetch-fonts.ts",
+    "db:render-assert": "tsx scripts/render-assert.ts",
     "knip": "knip",
     "madge": "madge --circular --extensions ts,tsx src app",
     "size": "size-limit",
