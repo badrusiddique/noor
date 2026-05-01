@@ -32,6 +32,7 @@ import { existsSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } 
 import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 import { setTimeout as sleep } from 'node:timers/promises';
+import { spawnSync } from 'node:child_process';
 
 import Database from 'better-sqlite3';
 
@@ -912,7 +913,6 @@ async function main(): Promise<void> {
   // when KFGQPC is unavailable (current Plan B path) so the build is not
   // blocked.
   await logPhase('render-and-assert (15-line invariant)', async () => {
-    const { spawnSync } = await import('node:child_process');
     const result = spawnSync('pnpm', ['db:render-assert'], {
       cwd: ROOT,
       stdio: 'inherit',
