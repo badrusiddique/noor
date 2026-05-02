@@ -20,6 +20,7 @@
     "preview": {
       "distribution": "internal",
       "channel": "preview",
+      "prebuildCommand": "pnpm fonts:fetch && pnpm db:build",
       "ios": {
         "simulator": false
       },
@@ -29,6 +30,7 @@
     },
     "production": {
       "channel": "production",
+      "prebuildCommand": "pnpm fonts:fetch && pnpm db:build",
       "autoIncrement": true,
       "ios": {
         "simulator": false

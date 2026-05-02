@@ -1,17 +1,21 @@
 /**
  * One Mushaf line — RTL Arabic text with embedded per-verse spans.
  *
- * Uses native CoreText / HarfBuzz shaping (the platform handles
- * ligature shaping for Arabic when given a fontFamily). Embedded
- * `<Text>` children let Phase 4 attach long-press handlers per verse
- * without re-rendering the entire line.
+ * Uses native CoreText / HarfBuzz shaping. The font is Amiri Quran
+ * (Plan B, SIL OFL 1.1) — a dedicated Quran typesetting font with full
+ * GDEF/GPOS tables for proper diacritic and contextual substitution.
+ * Will switch to KFGQPC IndoPak when Plan A is resolved (ADR-0009).
+ *
+ * Text source: text_uthmani with full tashkeel (see queries/page.ts).
+ * Embedded `<Text>` children let Phase 4 attach long-press handlers per
+ * verse without re-rendering the entire line.
  */
 
 import { memo } from 'react';
 import { StyleSheet, Text, type TextStyle } from 'react-native';
 
 import { useTheme } from '@/theme/useTheme';
-import { typography } from '@/theme/tokens';
+import { mushafFont } from '@/theme/tokens';
 
 import type { PageLine } from '../../data/queries/page';
 
@@ -53,10 +57,7 @@ const styles = StyleSheet.create({
   line: {
     writingDirection: 'rtl',
     textAlign: 'right',
-    fontFamily: typography.scheherazadeNew,
-    // Phase 2 beta TODO: swap to typography.kfgqpcIndoPak when ADR-0009
-    // Plan A succeeds (Phase 1c). Per ADR-0009 Plan B, Scheherazade is
-    // the alpha font; line-break fidelity is approximate without KFGQPC.
+    fontFamily: mushafFont,
     includeFontPadding: false,
     textAlignVertical: 'center',
   },

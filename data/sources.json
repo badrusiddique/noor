@@ -70,7 +70,14 @@
       "sha256": "TBD-AT-BUILD",
       "license": "SIL Open Font License 1.1",
       "attribution": "SIL International",
-      "note": "Primary Arabic font for Phase 1b (Plan B per ADR-0009 since KFGQPC IndoPak is unavailable). The zip contains ScheherazadeNew-Regular.ttf and bold/italic siblings; only Regular is bundled."
+      "note": "Plan C fallback Arabic font per ADR-0009. The zip contains ScheherazadeNew-Regular.ttf; only Regular is bundled."
+    },
+    "font_amiri_quran": {
+      "url": "https://fonts.gstatic.com/s/amiriquran/v19/_Xmo-Hk0rD6DbUL4_vH8Zq5t.ttf",
+      "sha256": "TBD-AT-BUILD",
+      "license": "SIL Open Font License 1.1",
+      "attribution": "alif-type (Khaled Hosny). Amiri Quran v19. Dedicated Quran typesetting font with full GDEF/GPOS tables.",
+      "note": "Plan B active primary font per ADR-0009 Phase 1c. Downloaded directly from Google Fonts static CDN (versioned, stable). Replaces KFGQPC IndoPak until Plan A is resolved."
     }
   },
   "audio_bundle_alafasy": {

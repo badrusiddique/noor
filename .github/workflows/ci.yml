@@ -67,6 +67,10 @@ jobs:
         run: pnpm size
         continue-on-error: true
 
+      - name: Fetch fonts (Phase 1c+)
+        run: pnpm fonts:fetch
+        continue-on-error: true
+
       - name: Build SQLite database (Phase 1+)
         run: pnpm db:build
         continue-on-error: true
