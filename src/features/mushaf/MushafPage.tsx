@@ -5,9 +5,6 @@
  * Wrapped in React.memo with a custom comparator so neighbouring pages
  * in the windowed pager don't re-render when only the active page index
  * changes.
- *
- * Phase 2 alpha: page-border SVG + ornate art deferred. The container is
- * a clean parchment surface with the headers/footers in place.
  */
 
 import { memo, useMemo } from 'react';
@@ -18,6 +15,7 @@ import { fontSize, spacing, typography } from '@/theme/tokens';
 
 import { BasmalaCartouche } from './BasmalaCartouche';
 import { Cartouche } from './Cartouche';
+import { PageBorder } from './PageBorder';
 import { useMushafPage } from './useMushafPage';
 import { MushafLine } from './MushafLine';
 import { PageFooter } from './PageFooter';
@@ -28,22 +26,22 @@ type Props = {
   pageNo: number;
   metrics: PageMetrics;
   pageWidth: number;
+  pageHeight: number;
 };
 
-function MushafPageImpl({ pageNo, metrics, pageWidth }: Props) {
+function MushafPageImpl({ pageNo, metrics, pageWidth, pageHeight }: Props) {
   const theme = useTheme();
   const { data, isLoading, error } = useMushafPage(pageNo);
 
   const headerSurahName = useMemo(() => {
     if (!data) return '';
     // Header reflects the FIRST surah on the page (matches printed Mushaf
-    // convention). If multiple surahs split the page, the bottom-of-page
-    // surah header still shows above the line band as a Cartouche.
+    // convention).
     const firstSurahLine = data.lines.find((l) => l.surahHeader);
-    if (firstSurahLine?.surahHeader) return firstSurahLine.surahHeader.nameTranslit;
+    if (firstSurahLine?.surahHeader) return firstSurahLine.surahHeader.nameAr;
     const firstSpan = data.lines[0]?.spans[0];
     if (!firstSpan) return '';
-    return `Surah ${firstSpan.surahNo}`;
+    return '';
   }, [data]);
 
   if (error) {
@@ -73,33 +71,38 @@ function MushafPageImpl({ pageNo, metrics, pageWidth }: Props) {
 
   // Cartouche/basmala band sizing: ~one line band tall.
   const bandHeight = metrics.lineHeight;
-  const cartoucheWidth = Math.min(pageWidth - spacing.xxl * 2, 320);
+  const cartoucheWidth = Math.min(pageWidth - spacing.xl * 2, 340);
 
   return (
     <View style={[styles.page, { backgroundColor: theme.mushafBg }]}>
-      <PageHeader surahName={headerSurahName} juzNumber={data.juzNo} />
+      {/* Ornate gold double-rule border — the Pakistani Mushaf's defining frame */}
+      <PageBorder width={pageWidth} height={pageHeight} />
 
-      <View style={styles.body}>
-        {data.lines.map((line) => (
-          <View key={line.lineNo} style={styles.lineWrap}>
-            {line.surahHeader ? (
-              <Cartouche surah={line.surahHeader} width={cartoucheWidth} height={bandHeight} />
-            ) : null}
-            {line.basmalaHeader ? (
-              <BasmalaCartouche width={cartoucheWidth} height={bandHeight} />
-            ) : null}
-            <View style={[styles.lineBand, { height: bandHeight }]}>
-              <MushafLine
-                line={line}
-                fontSize={metrics.effectiveFontSize}
-                lineHeight={bandHeight}
-              />
+      <View style={styles.inner}>
+        <PageHeader surahName={headerSurahName} juzNumber={data.juzNo} hizbNumber={data.hizbNo} />
+
+        <View style={styles.body}>
+          {data.lines.map((line) => (
+            <View key={line.lineNo} style={styles.lineWrap}>
+              {line.surahHeader ? (
+                <Cartouche surah={line.surahHeader} width={cartoucheWidth} height={bandHeight} />
+              ) : null}
+              {line.basmalaHeader ? (
+                <BasmalaCartouche width={cartoucheWidth} height={bandHeight} />
+              ) : null}
+              <View style={[styles.lineBand, { height: bandHeight }]}>
+                <MushafLine
+                  line={line}
+                  fontSize={metrics.effectiveFontSize}
+                  lineHeight={bandHeight}
+                />
+              </View>
             </View>
-          </View>
-        ))}
-      </View>
+          ))}
+        </View>
 
-      <PageFooter pageNumber={pageNo} />
+        <PageFooter pageNumber={pageNo} />
+      </View>
     </View>
   );
 }
@@ -108,6 +111,7 @@ function arePropsEqual(a: Props, b: Props): boolean {
   return (
     a.pageNo === b.pageNo &&
     a.pageWidth === b.pageWidth &&
+    a.pageHeight === b.pageHeight &&
     a.metrics.effectiveFontSize === b.metrics.effectiveFontSize &&
     a.metrics.lineHeight === b.metrics.lineHeight
   );
@@ -118,7 +122,10 @@ export const MushafPage = memo(MushafPageImpl, arePropsEqual);
 const styles = StyleSheet.create({
   page: {
     flex: 1,
-    paddingHorizontal: spacing.lg,
+  },
+  inner: {
+    flex: 1,
+    paddingHorizontal: spacing.xl,
     paddingTop: spacing.sm,
     paddingBottom: spacing.sm,
   },

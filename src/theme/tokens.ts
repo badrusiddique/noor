@@ -55,15 +55,24 @@ export const typography = {
   inter: 'Inter',
   // UI serif (display)
   fraunces: 'Fraunces',
-  // Arabic Mushaf — primary
+  // Arabic Mushaf — Plan A: KFGQPC IndoPak Naskh (King Fahad Complex).
+  // Unavailable from public mirrors as of 2026-05; bundled when found.
   kfgqpcIndoPak: 'KFGQPC-IndopakNaskh',
-  // Arabic Mushaf — fallback (Plan B if KFGQPC licensing surfaces issues)
-  scheherazadeNew: 'ScheherazadeNew',
-  // Arabic translation typesetting (Egyptian Naskh)
+  // Arabic Mushaf — Plan B: Amiri Quran (alif-type, SIL OFL 1.1).
+  // Dedicated Quran typesetting font; active primary in Phase 1c.
   amiriQuran: 'AmiriQuran',
+  // Arabic Mushaf — Plan C fallback (SIL OFL 1.1).
+  scheherazadeNew: 'ScheherazadeNew',
   // Urdu UI / translations
   notoNastaliqUrdu: 'NotoNastaliqUrdu',
 } as const;
+
+/**
+ * Returns the best available Mushaf Arabic font family in priority order:
+ * KFGQPC IndoPak → Amiri Quran → Scheherazade New.
+ * Use at callsites that need the primary Mushaf Arabic font.
+ */
+export const mushafFont = typography.amiriQuran;
 
 export const spacing = {
   xxs: 2,

@@ -4,6 +4,13 @@
  * Returns a fully-grouped DTO so the renderer never has to re-walk the
  * verse list — one SQL hit per page, then in-memory grouping.
  *
+ * Text source: text_uthmani (Tanzil Uthmani orthography, full diacritics,
+ * CC-BY-3.0). This is the gold-standard digital Quran text — the same
+ * encoding used by Quran.com, Tanzil.net, and IslamicFinder. It includes
+ * all harakat (tashkeel), shadda, and sukun marks, making it correct for
+ * display in a reading app. The text_indopak column (Tanzil simple-clean,
+ * diacritic-stripped) is retained for legacy search but not rendered.
+ *
  * Phase 1a/b note: `verses.line_no` is a sequential 1..N placeholder
  * until Phase 1c lands the render-and-assert pipeline. Renders will be
  * approximate; the exact 15-line invariant is enforced in Phase 2 beta.
@@ -16,7 +23,7 @@ export type LineSpan = {
   verseId: string;
   surahNo: number;
   ayahNo: number;
-  /** Arabic text — text_indopak (Tanzil simple-clean placeholder per Phase 1a/b). */
+  /** Arabic text — text_uthmani (Tanzil Uthmani, full diacritics, gold standard). */
   text: string;
 };
 
@@ -26,6 +33,8 @@ export type SurahHeader = {
   nameTranslit: string;
   revelationPlace: 'makkah' | 'madinah';
   ayahCount: number;
+  /** Number of rukus in this surah — derived from COUNT(DISTINCT ruku_no). */
+  rukuCount: number;
 };
 
 export type PageLine = {
@@ -60,7 +69,7 @@ type VerseRow = {
   line_no: number;
   juz_no: number;
   hizb_no: number;
-  text_indopak: string;
+  text_uthmani: string;
 };
 
 type SurahRow = {
@@ -69,6 +78,7 @@ type SurahRow = {
   name_translit: string;
   revelation_place: string;
   ayah_count: number;
+  ruku_count: number;
 };
 
 type PageRow = {
@@ -91,7 +101,7 @@ export async function getPage(pageNo: number): Promise<PageDTO> {
   const db = await getDb();
 
   const versesRes = await db.execute(
-    `SELECT id, surah_no, ayah_no, page_no, line_no, juz_no, hizb_no, text_indopak
+    `SELECT id, surah_no, ayah_no, page_no, line_no, juz_no, hizb_no, text_uthmani
        FROM verses
       WHERE page_no = ?
       ORDER BY id ASC`,
@@ -120,9 +130,12 @@ export async function getPage(pageNo: number): Promise<PageDTO> {
   if (surahNumbers.length > 0) {
     const placeholders = surahNumbers.map(() => '?').join(',');
     const surahRes = await db.execute(
-      `SELECT number, name_ar, name_translit, revelation_place, ayah_count
-         FROM surahs
-        WHERE number IN (${placeholders})`,
+      `SELECT s.number, s.name_ar, s.name_translit, s.revelation_place, s.ayah_count,
+              COUNT(DISTINCT v.ruku_no) AS ruku_count
+         FROM surahs s
+         LEFT JOIN verses v ON v.surah_no = s.number
+        WHERE s.number IN (${placeholders})
+        GROUP BY s.number`,
       surahNumbers,
     );
     surahMap = new Map(
@@ -134,6 +147,7 @@ export async function getPage(pageNo: number): Promise<PageDTO> {
           nameTranslit: r.name_translit,
           revelationPlace: r.revelation_place === 'madinah' ? 'madinah' : 'makkah',
           ayahCount: r.ayah_count,
+          rukuCount: r.ruku_count,
         },
       ]),
     );
@@ -146,7 +160,7 @@ export async function getPage(pageNo: number): Promise<PageDTO> {
       verseId: `${v.surah_no}:${v.ayah_no}`,
       surahNo: v.surah_no,
       ayahNo: v.ayah_no,
-      text: v.text_indopak,
+      text: v.text_uthmani,
     };
 
     const existing = linesByNo.get(v.line_no);

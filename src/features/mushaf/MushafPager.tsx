@@ -110,7 +110,7 @@ export function MushafPager({ initialPage, fontSizePref, onPageChanged }: Props)
       >
         {windowPages.map((p) => (
           <View key={`page-${String(p)}`} style={styles.pageContainer} collapsable={false}>
-            <MushafPage pageNo={p} metrics={metrics} pageWidth={width} />
+            <MushafPage pageNo={p} metrics={metrics} pageWidth={width} pageHeight={height} />
           </View>
         ))}
       </PagerView>

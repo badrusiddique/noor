@@ -1,4 +1,5 @@
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
@@ -14,19 +15,25 @@ import { initI18n } from '@/i18n';
 void SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const [ready, setReady] = useState(false);
+  const [i18nReady, setI18nReady] = useState(false);
+
+  const [fontsLoaded, fontError] = useFonts({
+    // Arabic Mushaf — Plan B: Amiri Quran (SIL OFL 1.1, alif-type/amiri).
+    // Dedicated Quran typesetting font; closer to printed Mushaf style than
+    // Scheherazade New. GDEF + GPOS tables provide full Arabic shaping.
+    // Plan A (KFGQPC IndoPak) replaces this when a licensed mirror is found.
+    AmiriQuran: require('../assets/fonts/AmiriQuran.ttf'),
+    // Arabic Mushaf — Plan C fallback (Scheherazade New, SIL OFL 1.1).
+    ScheherazadeNew: require('../assets/fonts/ScheherazadeNew-Regular.ttf'),
+  });
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
-        // Phase 0: load i18n only. Fonts + DB bootstrap arrive in Phase 1/2.
         await initI18n();
       } finally {
-        if (!cancelled) {
-          setReady(true);
-          await SplashScreen.hideAsync().catch(() => undefined);
-        }
+        if (!cancelled) setI18nReady(true);
       }
     })();
     return () => {
@@ -34,8 +41,15 @@ export default function RootLayout() {
     };
   }, []);
 
+  const ready = i18nReady && (fontsLoaded || fontError !== null);
+
+  useEffect(() => {
+    if (ready) {
+      void SplashScreen.hideAsync().catch(() => undefined);
+    }
+  }, [ready]);
+
   if (!ready) {
-    // Splash is still up; render nothing.
     return null;
   }
 
