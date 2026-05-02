@@ -1,6 +1,6 @@
 {
   "name": "noor",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": true,
   "description": "Noor — a South Asian Quran reading app for iOS and Android. Privacy-first, no backend, single TypeScript codebase via Expo + React Native.",
   "author": "Badrudduza Siddique",

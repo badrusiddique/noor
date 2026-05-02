@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1](https://github.com/badrusiddique/noor/compare/v0.3.0...v0.3.1) (2026-05-02)
+
+
+### Bug Fixes
+
+* **deps:** realign react-native + react-native-screens to SDK 52 matrix ([#31](https://github.com/badrusiddique/noor/issues/31)) ([6369653](https://github.com/badrusiddique/noor/commit/636965331c56f7b6eae603ad4b6c2a9350e310a3))
+* drop Expo Go, add dev-client + iOS Sim + web-bundle paths ([#27](https://github.com/badrusiddique/noor/issues/27)) ([cfb44ef](https://github.com/badrusiddique/noor/commit/cfb44efd8d0db08e74f6a29b0c30a6865af873d6))
+
 ## [0.3.0](https://github.com/badrusiddique/noor/compare/v0.2.0...v0.3.0) (2026-05-01)
 
 
