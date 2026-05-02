@@ -18,6 +18,18 @@ const config: ExpoConfig = {
     backgroundColor: '#131f2a',
   },
   assetBundlePatterns: ['assets/fonts/*', 'assets/db/*', 'assets/audio/**/*', 'assets/images/*'],
+  // expo-updates is required by EAS Build's dev-client + production
+  // pipelines, but we deliberately do NOT ship OTA updates in v1.0 (see
+  // docs/BACKEND-HONESTY.md). The url declares the project's update
+  // channel for build-time identity only; runtime checks stay disabled
+  // until we revisit the OTA decision post-1.0.
+  updates: {
+    url: 'https://u.expo.dev/a57d0dd9-ca31-4d18-af11-ce5389a6274d',
+    enabled: false,
+  },
+  runtimeVersion: {
+    policy: 'appVersion',
+  },
   ios: {
     supportsTablet: true,
     bundleIdentifier: 'app.noor.quran',
