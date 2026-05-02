@@ -10,17 +10,18 @@ The headline:
 
 ## Every Network Touchpoint
 
-| Service                                | Purpose                   | Required to use the app?                                                   | Where it runs                    |
-| -------------------------------------- | ------------------------- | -------------------------------------------------------------------------- | -------------------------------- |
-| **Everyayah.com**                      | Audio CDN (primary)       | No — bundled Al-Fatihah works offline; user can use full app without audio | External, free, public           |
-| **download.quranicaudio.com**          | Audio CDN (fallback)      | No — only used if Everyayah unavailable                                    | External, free, public           |
-| **Sentry**                             | Crash reports             | No — opt-in; default OFF; local crash log is the default                   | External, opt-in only            |
-| **Tanzil.net + QuranEnc**              | Source XML/JSON           | **Build-time only** — never contacted by the app at runtime                | External, build-machine only     |
-| **api.quran.com (mushaf cross-check)** | Page-map validation       | **Build-time only** — never contacted by the app at runtime                | External, build-machine only     |
-| **fonts.qurancomplex.gov.sa**          | KFGQPC font download      | **Build-time only**                                                        | External, build-machine only     |
-| **EAS Build**                          | Compiles release binaries | Build-time only — never runs on user devices                               | Expo's servers, only at tag time |
-| **GitHub Actions**                     | CI                        | Build-time only                                                            | GitHub's servers                 |
-| **GitHub Releases**                    | Distribute APK            | One-time download per user                                                 | GitHub's CDN                     |
+| Service                                | Purpose                   | Required to use the app?                                                                                                                 | Where it runs                              |
+| -------------------------------------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| **Everyayah.com**                      | Audio CDN (primary)       | No — bundled Al-Fatihah works offline; user can use full app without audio                                                               | External, free, public                     |
+| **download.quranicaudio.com**          | Audio CDN (fallback)      | No — only used if Everyayah unavailable                                                                                                  | External, free, public                     |
+| **Sentry**                             | Crash reports             | No — opt-in; default OFF; local crash log is the default                                                                                 | External, opt-in only                      |
+| **Tanzil.net + QuranEnc**              | Source XML/JSON           | **Build-time only** — never contacted by the app at runtime                                                                              | External, build-machine only               |
+| **api.quran.com (mushaf cross-check)** | Page-map validation       | **Build-time only** — never contacted by the app at runtime                                                                              | External, build-machine only               |
+| **fonts.qurancomplex.gov.sa**          | KFGQPC font download      | **Build-time only**                                                                                                                      | External, build-machine only               |
+| **EAS Build**                          | Compiles release binaries | Build-time only — never runs on user devices                                                                                             | Expo's servers, only at tag time           |
+| **GitHub Actions**                     | CI                        | Build-time only                                                                                                                          | GitHub's servers                           |
+| **GitHub Releases**                    | Distribute APK            | One-time download per user                                                                                                               | GitHub's CDN                               |
+| **EAS Update (`u.expo.dev`)**          | Configured but disabled   | **No** — `updates.enabled: false` in `app.config.ts`. URL is build-time identity only; the app does NOT poll for OTA updates at runtime. | Expo's servers, never contacted at runtime |
 
 ---
 
@@ -41,6 +42,7 @@ There is **no telemetry**. No "ping home" on launch. No A/B testing infrastructu
 - **No sync server.** The schema has `sync_id` columns to keep cloud-sync as a future option, but no sync runs in v1.0.
 - **No API.** The app does not call any service we run, because we do not run any service.
 - **No CDN we pay for.** Audio comes from third-party free public CDNs.
+- **No OTA updates pushed.** The `expo-updates` module is installed because EAS Build's pipeline requires it for dev-client and production builds, but `updates.enabled: false` in `app.config.ts` keeps the app from ever phoning home to check for updates. Bug fixes ship via store update, not OTA. Revisit post-1.0 if hot-fix latency becomes a real pain.
 
 The only money we spend is the one-time $25 Google Play Console fee. The Apple Developer Program ($99/yr) is deferred indefinitely until Android traction justifies it.
 
